@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.expo/
+.expo-shared/
+
+# Coverage
+coverage/
+
+# iOS
+ios/build/
+ios/Pods/
+
+# Android
+android/app/build/
+android/.gradle/
+
+# Generated files
+*.generated.*
+*.g.ts
+*.g.tsx
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Documentation (optional - remove if you want to format docs)
+*.md
+
+# Cache
+.cache/
