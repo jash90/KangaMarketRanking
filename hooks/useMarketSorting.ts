@@ -11,7 +11,7 @@ import { useCallback, useState } from 'react';
 import { MarketData } from '@/types';
 
 export interface UseMarketSortingOptions {
-  defaultSort?: SortConfig;
+  defaultSort?: SortConfig | null;
   maxSorts?: number;
 }
 
@@ -34,9 +34,9 @@ export interface UseMarketSortingReturn {
  * });
  */
 export function useMarketSorting(options: UseMarketSortingOptions = {}): UseMarketSortingReturn {
-  const { defaultSort = { field: 'volume', order: 'desc' }, maxSorts = 2 } = options;
+  const { defaultSort = null, maxSorts = 2 } = options;
 
-  const [sortConfigs, setSortConfigs] = useState<SortConfig[]>([defaultSort]);
+  const [sortConfigs, setSortConfigs] = useState<SortConfig[]>(defaultSort ? [defaultSort] : []);
 
   /**
    * Toggle sort field with multi-select support
@@ -59,8 +59,8 @@ export function useMarketSorting(options: UseMarketSortingOptions = {}): UseMark
           } else {
             // ASC → OFF (remove from chain)
             const filtered = current.filter((_, i) => i !== existingIndex);
-            // If removed all, return to default
-            return filtered.length === 0 ? [defaultSort] : filtered;
+            // If removed all, return to default (or empty if no default)
+            return filtered.length === 0 && defaultSort ? [defaultSort] : filtered;
           }
         } else {
           // New field - add to sort chain
@@ -105,7 +105,7 @@ export function useMarketSorting(options: UseMarketSortingOptions = {}): UseMark
    * Reset to default sort
    */
   const clearSorts = useCallback(() => {
-    setSortConfigs([defaultSort]);
+    setSortConfigs(defaultSort ? [defaultSort] : []);
   }, [defaultSort]);
 
   return {

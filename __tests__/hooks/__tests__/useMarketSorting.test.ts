@@ -38,11 +38,8 @@ describe('useMarketSorting', () => {
     it('should use default options if none provided', () => {
       const { result } = renderHook(() => useMarketSorting());
 
-      expect(result.current.sortConfigs).toHaveLength(1);
-      expect(result.current.sortConfigs[0]).toMatchObject({
-        field: 'volume',
-        order: 'desc',
-      });
+      // With no options, defaultSort is null, so sortConfigs is empty
+      expect(result.current.sortConfigs).toHaveLength(0);
     });
   });
 
@@ -151,19 +148,18 @@ describe('useMarketSorting', () => {
         createMockMarket({ market: 'BTC/USDT', volume24h: 1000 }),
       ];
 
-      // Default is volume DESC, so BTC (1000) should be first initially
+      // No default sort, so original order is maintained
       let sorted = result.current.sortMarkets(markets);
-      expect(sorted[0]?.market).toBe('BTC/USDT'); // Higher volume first
+      expect(sorted[0]?.market).toBe('ETH/USDT'); // Original order
 
       act(() => {
-        result.current.toggleSort('market'); // Add market sort
+        result.current.toggleSort('market'); // Add market sort DESC
       });
 
       sorted = result.current.sortMarkets(markets);
 
-      // Now sorted by volume first, then market (both DESC initially)
-      // Since volumes differ, volume takes priority
-      expect(sorted[0]?.market).toBe('BTC/USDT'); // Still higher volume
+      // Now sorted by market DESC (Z→A), so ETH comes before BTC
+      expect(sorted[0]?.market).toBe('ETH/USDT');
     });
 
     it('should apply compound sorting (primary + secondary)', () => {
@@ -194,11 +190,12 @@ describe('useMarketSorting', () => {
         createMockMarket({ volume24h: 500, market: 'B' }),
       ];
 
-      // Default volume sort is DESC, so 1000 should be first
+      // No default sort, so original order is maintained
       let sorted = result.current.sortMarkets(markets);
       expect(sorted[0]?.volume24h).toBe(1000);
 
       act(() => {
+        result.current.toggleSort('volume'); // Add volume DESC
         result.current.toggleSort('volume'); // Toggle to ASC
       });
 

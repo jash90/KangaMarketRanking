@@ -36,7 +36,7 @@ export default function MarketsScreen() {
     debouncedSearch,
     {
       sortingOptions: {
-        defaultSort: { field: 'volume', order: 'desc' },
+        defaultSort: null,
         maxSorts: 2,
       },
     }

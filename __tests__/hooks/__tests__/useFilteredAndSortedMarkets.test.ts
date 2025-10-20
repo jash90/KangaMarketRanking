@@ -77,12 +77,13 @@ describe('useFilteredAndSortedMarkets', () => {
     });
 
     act(() => {
-      result.current.toggleSort('market');
+      result.current.toggleSort('market'); // DESC (Z→A)
+      result.current.toggleSort('market'); // ASC (A→Z)
     });
 
     rerender({ markets: mockMarkets, query: '' });
 
-    // Should be sorted alphabetically
+    // Should be sorted alphabetically (A→Z)
     expect(result.current.filteredMarkets[0]?.market).toBe('BTC/USDT');
     expect(result.current.filteredMarkets[1]?.market).toBe('ETH/USDT');
     expect(result.current.filteredMarkets[2]?.market).toBe('PEPE/USDT');
@@ -117,12 +118,13 @@ describe('useFilteredAndSortedMarkets', () => {
     expect(result.current.filteredMarkets).toHaveLength(2);
 
     act(() => {
-      result.current.toggleSort('spread'); // Sort by spread
+      result.current.toggleSort('spread'); // DESC (high→low)
+      result.current.toggleSort('spread'); // ASC (low→high)
     });
 
     rerender({ markets: marketsWithDuplicates, query: 'BTC' });
 
-    // Should be sorted by spread within BTC markets
+    // Should be sorted by spread ASC within BTC markets (low→high)
     expect(result.current.filteredMarkets[0]?.spread).toBe(0.62);
     expect(result.current.filteredMarkets[1]?.spread).toBe(1.42);
   });
